@@ -1,0 +1,442 @@
+{
+	"info": {
+		"_postman_id": "662f971a-87b9-4a5c-982e-019cad24dfb4",
+		"name": "REVENIUM MIDDLEWARES",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42242588"
+	},
+	"item": [
+		{
+			"name": "google",
+			"item": [
+				{
+					"name": "credentials",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"googleApiKey\": \"123123\",\r\n    \"reveniumMeteringApiKey\": \"213123123\",\r\n    \"reveniumMeteringBaseUrl\": \"12312321\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/revenium/google/credentials",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"revenium",
+								"google",
+								"credentials"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "streams",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"googleApiKey\": \"123123\",\r\n    \"reveniumMeteringApiKey\": \"dasdasdad\",\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/revenium/google/streams",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"revenium",
+								"google",
+								"streams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "types",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"googleApiKey\": \"123123\",\r\n    \"reveniumMeteringApiKey\": \"dasdasdad\",\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/revenium/google/types",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"revenium",
+								"google",
+								"types"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "basics",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"question\": \"what is the universe?\",\r\n    \"model\": \"gemini-2.0-flash-001\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/revenium/google/basics",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"revenium",
+								"google",
+								"basics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "embeddings",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"question\": \"what is the universe?\",\r\n    \"model\": \"text-embedding-004\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/revenium/google/embeddings",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"revenium",
+								"google",
+								"embeddings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "enhanced",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"question\": \"\",\r\n    \"model\": \"gemini-2.0-flash-001\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/revenium/google/enhanced",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"revenium",
+								"google",
+								"enhanced"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "vertex",
+			"item": [
+				{
+					"name": "streams",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"question\": \"what is the universe?\",\r\n    \"model\": \"gemini-2.0-flash-001\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/revenium/vertex/streams",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"revenium",
+								"vertex",
+								"streams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "basics",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/revenium/vertex/basics",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"revenium",
+								"vertex",
+								"basics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "embeddings",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"question\": \"what is the universe?\",\r\n    \"model\": \"text-embedding-004\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/revenium/vertex/embeddings",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"revenium",
+								"vertex",
+								"embeddings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "enhanced",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"question\": \"what is your favorite colors. what is your name?\",\r\n    \"model\": \"gemini-2.0-flash-001\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/revenium/vertex/enhanced",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"revenium",
+								"vertex",
+								"enhanced"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "perplexity",
+			"item": [
+				{
+					"name": "basics",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"question\": \"what is the universe?\",\r\n    \"model\": \"sonar-pro\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/revenium/perplexity/basics",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"revenium",
+								"perplexity",
+								"basics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "streams",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"question\": \"what is the universe?\",\r\n    \"model\": \"sonar-pro\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/revenium/perplexity/streams",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"revenium",
+								"perplexity",
+								"streams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "enhanced",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"question\": \"what is the universe?\",\r\n    \"model\": \"sonar-pro\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/revenium/vertex/enhanced",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"revenium",
+								"vertex",
+								"enhanced"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1"
+		},
+		{
+			"key": "base_url",
+			"value": "https://template.postman-echo.com"
+		}
+	]
+}
