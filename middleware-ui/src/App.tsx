@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Middlewares from "./ui/components/Middlewares";
 import { CURRENT_MIDDLEWARES } from "./utils/constants/middleware";
 import GroupSelect from "./ui/components/GroupSelect";
@@ -14,11 +14,18 @@ import type {
   IResponse,
   IResponseData,
   IEmbeddingResponseData,
+  IAllResponseData,
 } from "./interfaces/dto/Response";
-import { isEmbeddingResponse } from "./interfaces/dto/Response";
+import { isEmbeddingResponse, isAllResponse } from "./interfaces/dto/Response";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { formatEmbeddingResponse } from "./utils/formatEmbeddingResponse";
+import {
+  useMultipleTypingEffect,
+  useTypingEffect,
+} from "./hooks/useTypingEffect";
+import TypingCursor from "./ui/components/TypingCursor";
+import Toast from "./ui/components/Toast";
 import { service } from "./services/Service";
 import type { IResponseEmbedding } from "./interfaces/dto/ResponseEmbedding";
 import { CURRENT_PERPLEXITY_MODELS } from "./utils/constants/perplexity-models";
@@ -30,13 +37,114 @@ export default function App() {
   const [formValues, setFormValues] =
     useState<IFormValues>(INITIAL_FORM_VALUES);
   const [backendResponse, setBackendResponse] = useState<
-    IResponseData | IEmbeddingResponseData
+    IResponseData | IEmbeddingResponseData | IAllResponseData
   >({
     response: "",
     length: 0,
   });
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [showReveniumMessage, setShowReveniumMessage] =
+    useState<boolean>(false);
+
+  // Check if we're in streaming mode
+  const isStreamingMode = formValues.type === "streams";
+
+  // Typing effects for different response types
+  const multipleTypingEffect = useMultipleTypingEffect({
+    texts: isAllResponse(backendResponse)
+      ? backendResponse.response
+      : {
+          googleResult: "",
+          vertexResult: "",
+          perplexityResult: "",
+        },
+    speed: 25,
+    enabled:
+      isStreamingMode &&
+      selectedMiddleware === "all" &&
+      isAllResponse(backendResponse) &&
+      !loading,
+  });
+
+  const singleTypingEffect = useTypingEffect({
+    text:
+      !isAllResponse(backendResponse) &&
+      !isEmbeddingResponse(backendResponse) &&
+      (backendResponse as IResponseData).response
+        ? (backendResponse as IResponseData).response
+        : "",
+    speed: 25,
+    enabled:
+      isStreamingMode &&
+      selectedMiddleware !== "all" &&
+      !isAllResponse(backendResponse) &&
+      !isEmbeddingResponse(backendResponse) &&
+      !loading &&
+      (backendResponse as IResponseData).response !== "",
+  });
+
+  // Reset states when middleware changes
+  useEffect(() => {
+    setBackendResponse({ response: "", length: 0 });
+    setError("");
+    setShowReveniumMessage(false);
+  }, [selectedMiddleware]);
+
+  // Show Revenium message when typing is complete
+  useEffect(() => {
+    if (isStreamingMode && !loading) {
+      const isTypingComplete =
+        selectedMiddleware === "all"
+          ? !multipleTypingEffect.isTyping && isAllResponse(backendResponse)
+          : !singleTypingEffect.isTyping &&
+            !isAllResponse(backendResponse) &&
+            !isEmbeddingResponse(backendResponse);
+
+      if (
+        isTypingComplete &&
+        ((isAllResponse(backendResponse) &&
+          (backendResponse.response.googleResult ||
+            backendResponse.response.vertexResult ||
+            backendResponse.response.perplexityResult)) ||
+          (!isAllResponse(backendResponse) &&
+            !isEmbeddingResponse(backendResponse) &&
+            (backendResponse as IResponseData).response))
+      ) {
+        setShowReveniumMessage(true);
+        // Hide message after 5 seconds
+        const timer = setTimeout(() => {
+          setShowReveniumMessage(false);
+        }, 5000);
+        return () => clearTimeout(timer);
+      }
+    } else if (
+      !isStreamingMode &&
+      !loading &&
+      backendResponse &&
+      ((isAllResponse(backendResponse) &&
+        (backendResponse.response.googleResult ||
+          backendResponse.response.vertexResult ||
+          backendResponse.response.perplexityResult)) ||
+        (!isAllResponse(backendResponse) &&
+          !isEmbeddingResponse(backendResponse) &&
+          (backendResponse as IResponseData).response))
+    ) {
+      // For non-streaming mode, show message immediately
+      setShowReveniumMessage(true);
+      const timer = setTimeout(() => {
+        setShowReveniumMessage(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [
+    isStreamingMode,
+    loading,
+    multipleTypingEffect.isTyping,
+    singleTypingEffect.isTyping,
+    backendResponse,
+    selectedMiddleware,
+  ]);
 
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>
@@ -98,7 +206,10 @@ export default function App() {
                 <h3 className="font-medium text-gray-500">
                   Selected middleware
                 </h3>
-                <Badge label={selectedMiddleware} />
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <Badge label={selectedMiddleware} variant="primary" />
+                </div>
               </div>
               <form
                 action=""
@@ -161,13 +272,15 @@ export default function App() {
             </>
           )}
         </div>
-        <div className="p-4 border border-gray-200 rounded-md h-auto lg:h-full w-full lg:w-1/3 flex flex-col gap-4 overflow-visible lg:overflow-hidden">
+        <div className="p-4 border border-gray-200 rounded-md h-auto lg:h-full w-full lg:w-1/3 flex flex-col gap-4">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
             <h2 className="font-medium text-gray-500">RESPONSES</h2>
             <Button
               onClick={() => {
                 setBackendResponse({ response: "", length: 0 });
                 setFormValues(INITIAL_FORM_VALUES);
+                setError("");
+                setShowReveniumMessage(false);
               }}
               color="destructive"
               type="button"
@@ -179,12 +292,100 @@ export default function App() {
             <>
               <div className="flex flex-col gap-2">
                 <h3 className="font-medium text-gray-500">AI Response:</h3>
-                <div className="border border-gray-200 rounded-md p-2 h-[300px] sm:h-[350px] lg:flex-1 lg:min-h-0 overflow-y-auto text-sm text-gray-500 break-all overflow-wrap-anywhere whitespace-pre-wrap">
+                <div className="border border-gray-200 rounded-md p-4 h-[500px] overflow-y-auto text-sm text-gray-500 break-words whitespace-pre-wrap">
                   {loading ? (
                     <p>Loading...</p>
                   ) : (
                     <div className="flex flex-col gap-2">
-                      {isEmbeddingResponse(backendResponse) ? (
+                      {selectedMiddleware === "all" &&
+                      isAllResponse(backendResponse) ? (
+                        <div className="text-sm text-gray-600">
+                          {/* Google Result */}
+                          <div className="mb-4 border border-blue-200 rounded p-3 bg-blue-50">
+                            <h4 className="font-medium text-blue-800 mb-2 flex items-center">
+                              <span className="w-3 h-3 bg-blue-500 rounded-full mr-2"></span>
+                              Google AI Result
+                            </h4>
+                            <div className="bg-white p-3 rounded text-gray-700">
+                              <div className="relative">
+                                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                  {isStreamingMode
+                                    ? multipleTypingEffect.displayedTexts
+                                        .googleResult || "No response"
+                                    : backendResponse.response.googleResult ||
+                                      "No response"}
+                                </ReactMarkdown>
+                                <TypingCursor
+                                  isVisible={
+                                    isStreamingMode &&
+                                    multipleTypingEffect.isTyping
+                                  }
+                                />
+                              </div>
+                              <p className="text-xs text-gray-500 mt-2 border-t pt-2">
+                                Length: {backendResponse.length.googleResult}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Vertex Result */}
+                          <div className="mb-4 border border-green-200 rounded p-3 bg-green-50">
+                            <h4 className="font-medium text-green-800 mb-2 flex items-center">
+                              <span className="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
+                              Vertex AI Result
+                            </h4>
+                            <div className="bg-white p-3 rounded text-gray-700">
+                              <div className="relative">
+                                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                  {isStreamingMode
+                                    ? multipleTypingEffect.displayedTexts
+                                        .vertexResult || "No response"
+                                    : backendResponse.response.vertexResult ||
+                                      "No response"}
+                                </ReactMarkdown>
+                                <TypingCursor
+                                  isVisible={
+                                    isStreamingMode &&
+                                    multipleTypingEffect.isTyping
+                                  }
+                                />
+                              </div>
+                              <p className="text-xs text-gray-500 mt-2 border-t pt-2">
+                                Length: {backendResponse.length.vertexResult}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Perplexity Result */}
+                          <div className="mb-4 border border-purple-200 rounded p-3 bg-purple-50">
+                            <h4 className="font-medium text-purple-800 mb-2 flex items-center">
+                              <span className="w-3 h-3 bg-purple-500 rounded-full mr-2"></span>
+                              Perplexity AI Result
+                            </h4>
+                            <div className="bg-white p-3 rounded text-gray-700">
+                              <div className="relative">
+                                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                  {isStreamingMode
+                                    ? multipleTypingEffect.displayedTexts
+                                        .perplexityResult || "No response"
+                                    : backendResponse.response
+                                        .perplexityResult || "No response"}
+                                </ReactMarkdown>
+                                <TypingCursor
+                                  isVisible={
+                                    isStreamingMode &&
+                                    multipleTypingEffect.isTyping
+                                  }
+                                />
+                              </div>
+                              <p className="text-xs text-gray-500 mt-2 border-t pt-2">
+                                Length:{" "}
+                                {backendResponse.length.perplexityResult}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ) : isEmbeddingResponse(backendResponse) ? (
                         <div className="text-sm text-gray-600">
                           <p className="mb-2 font-medium">Embedding Vectors:</p>
                           {backendResponse.response.map((item, itemIndex) => (
@@ -204,7 +405,7 @@ export default function App() {
                                   </span>
                                 )}
                               </div>
-                              <div className="bg-gray-50 p-2 rounded max-h-24 sm:max-h-32 overflow-y-auto font-mono text-xs">
+                              <div className="bg-gray-50 p-2 rounded font-mono text-xs">
                                 {item.values.map((value, valueIndex) => (
                                   <span
                                     key={valueIndex}
@@ -224,15 +425,40 @@ export default function App() {
                           ))}
                         </div>
                       ) : (
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                          {formatEmbeddingResponse(
-                            backendResponse.response as string
-                          )}
-                        </ReactMarkdown>
+                        <div className="relative">
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                            {isStreamingMode
+                              ? singleTypingEffect.displayedText ||
+                                formatEmbeddingResponse(
+                                  (backendResponse as IResponseData)
+                                    .response as string
+                                )
+                              : formatEmbeddingResponse(
+                                  (backendResponse as IResponseData)
+                                    .response as string
+                                )}
+                          </ReactMarkdown>
+                          <TypingCursor
+                            isVisible={
+                              isStreamingMode && singleTypingEffect.isTyping
+                            }
+                          />
+                        </div>
                       )}
-                      <p className="font-medium">
-                        Length: {backendResponse.length}
-                      </p>
+
+                      {selectedMiddleware !== "all" &&
+                        !isAllResponse(backendResponse) && (
+                          <p className="font-medium">
+                            Length:{" "}
+                            {
+                              (
+                                backendResponse as
+                                  | IResponseData
+                                  | IEmbeddingResponseData
+                              ).length
+                            }
+                          </p>
+                        )}
                     </div>
                   )}
                 </div>
@@ -270,6 +496,13 @@ export default function App() {
           )}
         </div>
       </main>
+
+      {/* Toast notification */}
+      <Toast
+        isVisible={showReveniumMessage}
+        message="✅ Response completed! Check the Revenium UI to verify the data was received."
+        onClose={() => setShowReveniumMessage(false)}
+      />
     </div>
   );
 }

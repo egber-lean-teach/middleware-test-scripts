@@ -255,6 +255,12 @@ POST /api/revenium/perplexity/enhanced
 POST /api/revenium/perplexity/metadatas
 ```
 
+### All Middleware Endpoints
+
+```
+POST /api/revenium/all/basics
+```
+
 ### Request Format
 
 ```json
@@ -267,6 +273,8 @@ POST /api/revenium/perplexity/metadatas
 
 ### Response Format
 
+**Single Middleware Response:**
+
 ```json
 {
   "message": "Success",
@@ -276,6 +284,31 @@ POST /api/revenium/perplexity/metadatas
       "content": {
         "response": "The universe is...",
         "length": 1234
+      }
+    }
+  ]
+}
+```
+
+**All Middleware Response:**
+
+```json
+{
+  "message": "Success",
+  "status": 200,
+  "data": [
+    {
+      "content": {
+        "response": {
+          "googleResult": "I am a large language model, trained by Google.",
+          "vertexResult": "I am a large language model, trained by Google.",
+          "perplexityResult": "My name is **Perplexity**, and I am a search assistant..."
+        },
+        "length": {
+          "googleResult": 45,
+          "vertexResult": 45,
+          "perplexityResult": 234
+        }
       }
     }
   ]
@@ -316,6 +349,17 @@ POST /api/revenium/perplexity/metadatas
    - Prompt: `Explain quantum computing`
 3. **Click Send**
 4. **Expected Response**: Streamed text response
+
+### Example 4: All Middleware Request
+
+1. **Select Middleware**: All
+2. **Configure Request**:
+   - Type: `basics`
+   - Model: `gemini-2.0-flash-001`
+   - Environment: `QA`
+   - Prompt: `What is your name?`
+3. **Click Send**
+4. **Expected Response**: Combined responses from Google, Vertex, and Perplexity AI displayed in separate colored sections
 
 ## 🔍 Troubleshooting
 

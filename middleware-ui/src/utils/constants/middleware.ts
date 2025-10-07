@@ -11,29 +11,35 @@ export const CURRENT_MIDDLEWARES: IMiddleware[] = [
     name: "Google",
     description: "@revenium/google",
     key_name: "google",
-    isSelected: true,
+    isSelected: false, // This will be calculated dynamically
     status: "working",
   },
-
   {
     name: "Vertex",
     description: "@revenium/vertex",
     key_name: "vertex",
-    isSelected: false,
+    isSelected: false, // This will be calculated dynamically
     status: "working",
   },
   {
     name: "Perplexity",
     description: "@revenium/perplexity",
     key_name: "perplexity",
-    isSelected: false,
+    isSelected: false, // This will be calculated dynamically
+    status: "working",
+  },
+  {
+    name: "All",
+    description: "@revenium/google, @revenium/vertex, @revenium/perplexity",
+    key_name: "all",
+    isSelected: false, // This will be calculated dynamically
     status: "working",
   },
   {
     name: "Google V1",
     description: "@revenium/google",
     key_name: "google_V1",
-    isSelected: true,
+    isSelected: false, // This will be calculated dynamically
     status: "no working",
   },
 ];

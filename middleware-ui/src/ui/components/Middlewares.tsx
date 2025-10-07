@@ -9,6 +9,7 @@ interface IMiddlewareProps {
   setSelectedMiddleware: (middleware: string) => void;
 }
 export default function Middlewares({
+  selectedMiddleware,
   setSelectedMiddleware,
 }: IMiddlewareProps): React.ReactNode {
   return (
@@ -20,7 +21,7 @@ export default function Middlewares({
           description={middleware.description}
           key_name={middleware.key_name}
           setSelectedMiddleware={setSelectedMiddleware}
-          is_selected={middleware.isSelected}
+          is_selected={selectedMiddleware === middleware.key_name}
           status={middleware.status}
         />
       ))}
