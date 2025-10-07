@@ -7,7 +7,7 @@ interface IBadgeProps {
 export default function Badge({ label, variant }: IBadgeProps) {
   return (
     <div
-      className={`text-sm p-1 rounded-md ${
+      className={`text-xs px-2 py-1 rounded-full font-medium ${
         VARIANT_CLASS[variant || "secondary"]
       }`}
     >

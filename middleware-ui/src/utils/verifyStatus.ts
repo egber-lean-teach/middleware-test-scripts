@@ -1,11 +1,11 @@
 export const verifyStatus = (status: string) => {
-  if (status === "working") {
+  if (status === "active" || status === "working") {
     return "success";
   }
-  if (status === "no working") {
+  if (status === "inactive" || status === "no working") {
     return "destructive";
   }
-  if (status === "In progress") {
+  if (status === "in progress" || status === "In progress") {
     return "warning";
   }
   return "secondary";

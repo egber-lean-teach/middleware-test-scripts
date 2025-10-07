@@ -6,9 +6,9 @@ interface IVariantClass {
   warning: string;
 }
 export const VARIANT_CLASS: IVariantClass = {
-  primary: "bg-black/70 text-white hover:bg-black/80 ",
-  secondary: "bg-gray-100",
-  destructive: "bg-red-400 text-white",
-  success: "bg-green-300 text-white",
-  warning: "bg-yellow-400",
+  primary: "bg-blue-100 text-blue-800 border border-blue-200",
+  secondary: "bg-gray-100 text-gray-700 border border-gray-200",
+  destructive: "bg-red-50 text-red-700 border border-red-200",
+  success: "bg-green-50 text-green-700 border border-green-200",
+  warning: "bg-amber-50 text-amber-700 border border-amber-200",
 };

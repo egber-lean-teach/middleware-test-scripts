@@ -87,10 +87,21 @@ export const useMultipleTypingEffect = ({
         !texts.vertexResult?.trim() &&
         !texts.perplexityResult?.trim())
     ) {
-      setDisplayedTexts({
-        googleResult: texts.googleResult || "",
-        vertexResult: texts.vertexResult || "",
-        perplexityResult: texts.perplexityResult || "",
+      setDisplayedTexts((prev) => {
+        const newTexts = {
+          googleResult: texts.googleResult || "",
+          vertexResult: texts.vertexResult || "",
+          perplexityResult: texts.perplexityResult || "",
+        };
+        // Only update if there's actually a change
+        if (
+          prev.googleResult !== newTexts.googleResult ||
+          prev.vertexResult !== newTexts.vertexResult ||
+          prev.perplexityResult !== newTexts.perplexityResult
+        ) {
+          return newTexts;
+        }
+        return prev;
       });
       setIsTyping(false);
       return;
@@ -140,7 +151,13 @@ export const useMultipleTypingEffect = ({
     return () => {
       timers.forEach(clearInterval);
     };
-  }, [texts, speed, enabled]);
+  }, [
+    texts.googleResult,
+    texts.vertexResult,
+    texts.perplexityResult,
+    speed,
+    enabled,
+  ]);
 
   return { displayedTexts, isTyping };
 };
